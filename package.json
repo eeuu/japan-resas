@@ -1,5 +1,5 @@
 {
-  "name": "",
+  "name": "japan-resas",
   "type": "module",
   "version": "0.0.1",
   "scripts": {
@@ -13,5 +13,8 @@
     "astro": "^4.5.16",
     "@astrojs/check": "^0.5.10",
     "typescript": "^5.4.4"
+  },
+  "volta": {
+    "node": "20.12.1"
   }
 }
