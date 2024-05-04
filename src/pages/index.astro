@@ -1,8 +1,24 @@
 ---
+// RESAS APIから都道府県データを取得する関数
+async function getPrefectures() {
+  const res = await fetch(
+    "https://opendata.resas-portal.go.jp/api/v1/prefectures",
+    {
+      headers: { "X-API-KEY": import.meta.env.RESAS_API_KEY },
+    },
+  );
+  if (!res.ok) {
+    throw new Error(
+      `Failed to fetch prefectures: ${res.status} ${res.statusText}`,
+    );
+  }
+  return res.json();
+}
 
+const { result: prefectures } = await getPrefectures();
 ---
 
-<html lang="en">
+<html lang="ja">
   <head>
     <meta charset="utf-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -11,6 +27,12 @@
     <title>Astro</title>
   </head>
   <body>
-    <h1 class="text-8xl">Astro</h1>
+    <ul>
+      {
+        prefectures.map((prefecture) => (
+          <li key={prefecture.prefCode}>{prefecture.prefName}</li>
+        ))
+      }
+    </ul>
   </body>
 </html>
