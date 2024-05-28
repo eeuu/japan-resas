@@ -28,6 +28,28 @@ async function fetchPopulationPerYear(prefCode) {
   return data.result;
 }
 const populations = await fetchPopulationPerYear(prefecture.prefCode);
+
+const years = populations.data.map((population) => {
+  if (population.label === "総人口") {
+    return population.data.map((populationData) => {
+      return populationData.year;
+    });
+  }
+  return null;
+});
+const flatYears = years.flat().filter((year) => year !== null);
+console.log(flatYears);
+
+const values = populations.data.map((population) => {
+  if (population.label === "総人口") {
+    return population.data.map((populationData) => {
+      return populationData.value;
+    });
+  }
+  return null;
+});
+const flatValues = values.flat().filter((value) => value !== null);
+console.log(flatValues);
 ---
 
 <script>
