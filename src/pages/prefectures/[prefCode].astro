@@ -15,7 +15,43 @@ export async function getStaticPaths() {
   }));
 }
 const { prefecture } = Astro.props;
+
+// 人口データ取得
+async function fetchPopulationPerYear(prefCode) {
+  const response = await fetch(
+    `https://opendata.resas-portal.go.jp/api/v1/population/composition/perYear?prefCode=${prefCode}`,
+    {
+      headers: { "X-API-KEY": import.meta.env.RESAS_API_KEY as string },
+    }
+  );
+  const data = await response.json();
+  return data.result;
+}
+const populations = await fetchPopulationPerYear(prefecture.prefCode);
 ---
+
+<script>
+  import * as echarts from "echarts";
+  // チャート
+  var myChart = echarts.init(document.getElementById("main"));
+  myChart.setOption({
+    title: {
+      text: "ECharts Getting Started Example",
+    },
+    tooltip: {},
+    xAxis: {
+      data: ["shirt", "cardigan", "chiffon", "pants", "heels", "socks"],
+    },
+    yAxis: {},
+    series: [
+      {
+        name: "sales",
+        type: "bar",
+        data: [5, 20, 36, 10, 10, 20],
+      },
+    ],
+  });
+</script>
 
 <html lang="ja">
   <head>
@@ -26,5 +62,22 @@ const { prefecture } = Astro.props;
   </head>
   <body>
     <p>{prefecture.prefName}</p>
+    <p>{populations.boundaryYear}</p>
+    <ul>
+      {
+        populations.data.map((population) => (
+          <li>
+            {population.label}
+            {population.data.map((populationData) => (
+              <span>
+                {populationData.year}
+                {populationData.value}
+              </span>
+            ))}
+          </li>
+        ))
+      }
+    </ul>
+    <div id="main" class:list={["w-80", "h-80"]}></div>
   </body>
 </html>
