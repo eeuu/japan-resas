@@ -56,38 +56,27 @@ console.log(JSON.stringify(flatValues));
   import * as echarts from "echarts";
 
   const main = document.getElementById("main");
-  const flatYears = main.dataset.flatYears.split(",");
-  const flatValues = main.dataset.flatValues.split(",");
-  // console.log(main.dataset.flatYears);
-  console.log(flatYears);
-  console.log(flatValues);
+  const years = main.dataset.years.split(",");
+  const values = main.dataset.values.split(",");
+  const label = main.dataset.label;
+  console.log(label);
   // チャート
   var myChart = echarts.init(main);
   myChart.setOption({
     title: {
-      text: "ECharts Getting Started Example",
+      left: "center",
+      text: label,
     },
     tooltip: {},
     xAxis: {
-      // data: ["shirt", "cardigan", "chiffon", "pants", "heels", "socks"],
-      // data: [
-      //   1960, 1965, 1970, 1975, 1980, 1985, 1990, 1995, 2000, 2005, 2010, 2015,
-      //   2020, 2025, 2030, 2035, 2040, 2045,
-      // ],
-      data: flatYears,
+      data: years,
     },
     yAxis: {},
     series: [
       {
-        name: "sales",
+        name: "人口",
         type: "bar",
-        // data: [5, 20, 36, 10, 10, 20],
-        // data: [
-        //   1448517, 1411118, 1371383, 1385563, 1421927, 1433611, 1416928,
-        //   1419505, 1416180, 1385041, 1330147, 1279594, 1210534, 1161638,
-        //   1096141, 1028673, 957788, 884518,
-        // ],
-        data: flatValues,
+        data: values,
       },
     ],
   });
@@ -100,37 +89,29 @@ console.log(JSON.stringify(flatValues));
     <meta name="generator" content={Astro.generator} />
     <title>Document</title>
   </head>
-  <body>
-    <p>{prefecture.prefName}</p>
-    <p>{populations.boundaryYear}</p>
-    <ul>
+  <body class:list={["p-9"]}>
+    <h1 class:list={["text-6xl", "text-center", "font-bold"]}>
+      {prefecture.prefName}
+    </h1>
+    <p class:list={["max-w-[1200px]", "m-auto", "text-right"]}>
+      実績値は{populations.boundaryYear}年まで、それ以降は推計値
+    </p>
+    <div class:list={["flex", "justify-center", "mt-40"]}>
       {
         populations.data.map((population) => (
-          <li>
-            {population.label}
-            {population.label === "総人口" &&
-              population.data.map((populationData) => (
-                <span>
-                  {/* {populationData.year}
-                  {populationData.value} */}
-                  {/* {JSON.stringify(flatYears)}
-                  {JSON.stringify(flatValues)} */}
-                </span>
-              ))}
-          </li>
+          <div>
+            {population.label === "総人口" && (
+              <div
+                id="main"
+                class:list={["w-[900px]", "h-[600px]"]}
+                data-years={flatYears}
+                data-values={flatValues}
+                data-label={population.label}
+              />
+            )}
+          </div>
         ))
       }
-    </ul>
-    <div
-      id="main"
-      class:list={["w-[1200px]", "h-[600px]"]}
-      data-flat-years={flatYears}
-      data-flat-values={flatValues}
-    >
     </div>
-    <!-- <p>
-      {JSON.stringify(flatYears)}
-      {JSON.stringify(flatValues)}
-    </p> -->
   </body>
 </html>
