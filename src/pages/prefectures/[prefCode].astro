@@ -38,7 +38,7 @@ const years = populations.data.map((population) => {
   return null;
 });
 const flatYears = years.flat().filter((year) => year !== null);
-console.log(flatYears);
+console.log(JSON.stringify(flatYears));
 
 const values = populations.data.map((population) => {
   if (population.label === "総人口") {
@@ -49,27 +49,45 @@ const values = populations.data.map((population) => {
   return null;
 });
 const flatValues = values.flat().filter((value) => value !== null);
-console.log(flatValues);
+console.log(JSON.stringify(flatValues));
 ---
 
 <script>
   import * as echarts from "echarts";
+
+  const main = document.getElementById("main");
+  const flatYears = main.dataset.flatYears.split(",");
+  const flatValues = main.dataset.flatValues.split(",");
+  // console.log(main.dataset.flatYears);
+  console.log(flatYears);
+  console.log(flatValues);
   // チャート
-  var myChart = echarts.init(document.getElementById("main"));
+  var myChart = echarts.init(main);
   myChart.setOption({
     title: {
       text: "ECharts Getting Started Example",
     },
     tooltip: {},
     xAxis: {
-      data: ["shirt", "cardigan", "chiffon", "pants", "heels", "socks"],
+      // data: ["shirt", "cardigan", "chiffon", "pants", "heels", "socks"],
+      // data: [
+      //   1960, 1965, 1970, 1975, 1980, 1985, 1990, 1995, 2000, 2005, 2010, 2015,
+      //   2020, 2025, 2030, 2035, 2040, 2045,
+      // ],
+      data: flatYears,
     },
     yAxis: {},
     series: [
       {
         name: "sales",
         type: "bar",
-        data: [5, 20, 36, 10, 10, 20],
+        // data: [5, 20, 36, 10, 10, 20],
+        // data: [
+        //   1448517, 1411118, 1371383, 1385563, 1421927, 1433611, 1416928,
+        //   1419505, 1416180, 1385041, 1330147, 1279594, 1210534, 1161638,
+        //   1096141, 1028673, 957788, 884518,
+        // ],
+        data: flatValues,
       },
     ],
   });
@@ -90,16 +108,29 @@ console.log(flatValues);
         populations.data.map((population) => (
           <li>
             {population.label}
-            {population.data.map((populationData) => (
-              <span>
-                {populationData.year}
-                {populationData.value}
-              </span>
-            ))}
+            {population.label === "総人口" &&
+              population.data.map((populationData) => (
+                <span>
+                  {/* {populationData.year}
+                  {populationData.value} */}
+                  {/* {JSON.stringify(flatYears)}
+                  {JSON.stringify(flatValues)} */}
+                </span>
+              ))}
           </li>
         ))
       }
     </ul>
-    <div id="main" class:list={["w-80", "h-80"]}></div>
+    <div
+      id="main"
+      class:list={["w-[1200px]", "h-[600px]"]}
+      data-flat-years={flatYears}
+      data-flat-values={flatValues}
+    >
+    </div>
+    <!-- <p>
+      {JSON.stringify(flatYears)}
+      {JSON.stringify(flatValues)}
+    </p> -->
   </body>
 </html>
