@@ -38,7 +38,6 @@ const prefectures: Prefecture[] = await fetchPrefectures();
           altText={prefecture.prefName}
           prefCode={prefecture.prefCode}
           prefName={prefecture.prefName}
-          client:load
           imagePath={`/src/assets/${prefecture.prefCode}.png`}
         />
       ))
