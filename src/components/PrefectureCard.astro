@@ -20,8 +20,22 @@ if (!images[imagePath])
 ---
 
 <li class:list="">
-  <a href={`/prefectures/${prefCode}`}>
-    <Image src={images[imagePath]()} alt={altText} />
-    <p>{prefName}</p>
+  <a
+    class:list={[
+      "flex",
+      "flex-col",
+      "items-center",
+      "border-2",
+      "p-4",
+      "gap-3",
+      "rounded-xl",
+      "hover:opacity-50",
+      "transition",
+      "duration-300",
+    ]}
+    href={`/prefectures/${prefCode}`}
+  >
+    <Image class:list={} src={images[imagePath]()} alt={altText} />
+    <p class:list={["text-3xl"]}>{prefName}</p>
   </a>
 </li>

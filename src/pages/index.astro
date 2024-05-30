@@ -40,7 +40,7 @@ const prefectures: Prefecture[] = await fetchPrefectures();
     <h1 class:list={["text-6xl", "text-center", "font-bold"]}>
       都道府県リスト
     </h1>
-    <ul class:list={["mt-40", "grid", "grid-cols-6"]}>
+    <ul class:list={["mt-40", "grid", "grid-cols-4", "gap-8"]}>
       {
         prefectures.map((prefecture) => (
           <PrefectureCard
