@@ -1,4 +1,6 @@
 ---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+
 // ルーティング
 export async function getStaticPaths() {
   const response = await fetch(
@@ -82,37 +84,30 @@ console.log(JSON.stringify(flatValues));
   });
 </script>
 
-<html lang="ja">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
-    <meta name="generator" content={Astro.generator} />
-    <title>Document</title>
-  </head>
-  <body class:list={["p-9"]}>
-    <a href="/">home</a>
-    <h1 class:list={["text-6xl", "text-center", "font-bold"]}>
-      {prefecture.prefName}
-    </h1>
-    <p class:list={["max-w-[1200px]", "mx-auto", "mt-7", "text-center"]}>
-      実績値は{populations.boundaryYear}年まで、それ以降は推計値
-    </p>
-    <div class:list={["flex", "justify-center", "mt-40"]}>
-      {
-        populations.data.map((population) => (
-          <div>
-            {population.label === "総人口" && (
-              <div
-                id="main"
-                class:list={["w-[900px]", "h-[600px]"]}
-                data-years={flatYears}
-                data-values={flatValues}
-                data-label={population.label}
-              />
-            )}
-          </div>
-        ))
-      }
-    </div>
-  </body>
-</html>
+<BaseLayout title={prefecture.prefName}>
+  <a title={prefecture.prefName}></a>
+  <a href="/">home</a>
+  <h1 class:list={["text-6xl", "text-center", "font-bold"]}>
+    {prefecture.prefName}
+  </h1>
+  <p class:list={["max-w-[1200px]", "mx-auto", "mt-7", "text-center"]}>
+    実績値は{populations.boundaryYear}年まで、それ以降は推計値
+  </p>
+  <div class:list={["flex", "justify-center", "mt-40"]}>
+    {
+      populations.data.map((population) => (
+        <div>
+          {population.label === "総人口" && (
+            <div
+              id="main"
+              class:list={["w-[900px]", "h-[600px]"]}
+              data-years={flatYears}
+              data-values={flatValues}
+              data-label={population.label}
+            />
+          )}
+        </div>
+      ))
+    }
+  </div>
+</BaseLayout>
