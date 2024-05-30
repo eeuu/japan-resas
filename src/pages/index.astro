@@ -1,4 +1,6 @@
 ---
+import PrefectureCard from "@/components/PrefectureCard.astro";
+
 type Prefecture = {
   prefCode: number;
   prefName: string;
@@ -34,16 +36,19 @@ const prefectures: Prefecture[] = await fetchPrefectures();
     <meta name="generator" content={Astro.generator} />
     <title>都道府県リスト</title>
   </head>
-  <body>
-    <h1>都道府県リスト</h1>
-    <ul>
+  <body class:list={["p-9"]}>
+    <h1 class:list={["text-6xl", "text-center", "font-bold"]}>
+      都道府県リスト
+    </h1>
+    <ul class:list={["mt-40", "grid", "grid-cols-6"]}>
       {
         prefectures.map((prefecture) => (
-          <li>
-            <a href={`/prefectures/${prefecture.prefCode}`}>
-              {prefecture.prefName}
-            </a>
-          </li>
+          <PrefectureCard
+            imagePath=`/src/assets/${prefecture.prefCode}.png`
+            altText={prefecture.prefName}
+            prefCode={prefecture.prefCode}
+            prefName={prefecture.prefName}
+          />
         ))
       }
     </ul>
