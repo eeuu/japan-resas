@@ -61,7 +61,6 @@ const years = populations.data
   })
   .flat()
   .filter((year): year is number => year !== null);
-console.log(JSON.stringify(years));
 
 const values = populations.data
   .map((population) => {
@@ -72,7 +71,6 @@ const values = populations.data
   })
   .flat()
   .filter((value): value is number => value !== null);
-console.log(JSON.stringify(values));
 ---
 
 <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js" is:inline
@@ -90,7 +88,6 @@ console.log(JSON.stringify(values));
       const years = main.dataset.years.split(",");
       const values = main.dataset.values.split(",");
       const label = main.dataset.label;
-      console.log(label);
       // チャート
       var myChart = echarts.init(main);
       myChart.setOption({
