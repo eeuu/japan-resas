@@ -1,6 +1,27 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
 
+// 型定義
+interface Prefecture {
+  prefCode: number;
+  prefName: string;
+}
+
+interface PopulationData {
+  year: number;
+  value: number;
+}
+
+interface Population {
+  label: string;
+  data: PopulationData[];
+}
+
+interface Populations {
+  boundaryYear: number;
+  data: Population[];
+}
+
 // ルーティング
 export async function getStaticPaths() {
   const response = await fetch(
@@ -9,78 +30,90 @@ export async function getStaticPaths() {
       headers: { "X-API-KEY": import.meta.env.RESAS_API_KEY as string },
     }
   );
-  const prefectures = await response.json();
+  const prefectures: { result: Prefecture[] } = await response.json();
 
   return prefectures.result.map((prefecture) => ({
     params: { prefCode: prefecture.prefCode.toString() },
     props: { prefecture },
   }));
 }
-const { prefecture } = Astro.props;
+const { prefecture } = Astro.props as { prefecture: Prefecture };
 
 // 人口データ取得
-async function fetchPopulationPerYear(prefCode) {
+async function fetchPopulationPerYear(prefCode: number): Promise<Populations> {
   const response = await fetch(
     `https://opendata.resas-portal.go.jp/api/v1/population/composition/perYear?prefCode=${prefCode}`,
     {
       headers: { "X-API-KEY": import.meta.env.RESAS_API_KEY as string },
     }
   );
-  const data = await response.json();
+  const data: { result: Populations } = await response.json();
   return data.result;
 }
 const populations = await fetchPopulationPerYear(prefecture.prefCode);
 
-const years = populations.data.map((population) => {
-  if (population.label === "総人口") {
-    return population.data.map((populationData) => {
-      return populationData.year;
-    });
-  }
-  return null;
-});
-const flatYears = years.flat().filter((year) => year !== null);
-console.log(JSON.stringify(flatYears));
+const years = populations.data
+  .map((population) => {
+    if (population.label === "総人口") {
+      return population.data.map((populationData) => populationData.year);
+    }
+    return null;
+  })
+  .flat()
+  .filter((year): year is number => year !== null);
+console.log(JSON.stringify(years));
 
-const values = populations.data.map((population) => {
-  if (population.label === "総人口") {
-    return population.data.map((populationData) => {
-      return populationData.value;
-    });
-  }
-  return null;
-});
-const flatValues = values.flat().filter((value) => value !== null);
-console.log(JSON.stringify(flatValues));
+const values = populations.data
+  .map((population) => {
+    if (population.label === "総人口") {
+      return population.data.map((populationData) => populationData.value);
+    }
+    return null;
+  })
+  .flat()
+  .filter((value): value is number => value !== null);
+console.log(JSON.stringify(values));
 ---
 
-<script>
-  import * as echarts from "echarts";
+<script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js" is:inline
+></script>
 
-  const main = document.getElementById("main");
-  const years = main.dataset.years.split(",");
-  const values = main.dataset.values.split(",");
-  const label = main.dataset.label;
-  console.log(label);
-  // チャート
-  var myChart = echarts.init(main);
-  myChart.setOption({
-    title: {
-      left: "center",
-      text: label,
-    },
-    tooltip: {},
-    xAxis: {
-      data: years,
-    },
-    yAxis: {},
-    series: [
-      {
-        name: "人口",
-        type: "bar",
-        data: values,
-      },
-    ],
+<script is:inline>
+  document.addEventListener("DOMContentLoaded", function () {
+    const main = document.getElementById("main");
+    if (
+      main &&
+      main.dataset.years &&
+      main.dataset.values &&
+      main.dataset.label
+    ) {
+      const years = main.dataset.years.split(",");
+      const values = main.dataset.values.split(",");
+      const label = main.dataset.label;
+      console.log(label);
+      // チャート
+      var myChart = echarts.init(main);
+      myChart.setOption({
+        title: {
+          left: "center",
+          text: label,
+        },
+        tooltip: {},
+        xAxis: {
+          data: years,
+        },
+        yAxis: {},
+        series: [
+          {
+            name: "人口",
+            type: "bar",
+            data: values,
+          },
+        ],
+      });
+    } else {
+      console.error("Dataset properties are missing or main element not found");
+    }
   });
 </script>
 
@@ -101,8 +134,8 @@ console.log(JSON.stringify(flatValues));
             <div
               id="main"
               class:list={["w-[900px]", "h-[600px]"]}
-              data-years={flatYears}
-              data-values={flatValues}
+              data-years={years.join(",")}
+              data-values={values.join(",")}
               data-label={population.label}
             />
           )}
